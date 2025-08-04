@@ -1,0 +1,66 @@
+import os
+import subprocess
+import numpy
+import shutil
+import glob
+
+ITERATION_NUM=3
+METHOD_DICT = {
+    'pulse_kl_prior': {
+        'learning': 'pulse_kl_prior_self_play',
+        'exp_name': 'pulse_kl_prior',
+        'env': 'env_amp_z_lma_tennis',
+        'task': 'HumanoidTennis2ZLocalOpObs',
+        'epoch': 0
+    },
+}
+CFG_DIR = "./lma/data/cfg/learning"
+DST_DIR = "./output/HumanoidIm"
+TASK_NAME = "tennis2"
+
+
+def main():
+    for i in range(ITERATION_NUM):
+        for k, v in METHOD_DICT.items():
+
+            weight_save_dir = os.path.join(DST_DIR, TASK_NAME, k, str(i))
+            log_save_dir = os.path.join(DST_DIR, TASK_NAME, k, str(i), TASK_NAME, k)
+            os.makedirs(weight_save_dir, exist_ok=True)
+            os.makedirs(log_save_dir, exist_ok=True)
+
+            shutil.copy(os.path.join(CFG_DIR, v["learning"] + ".yaml"), weight_save_dir)
+
+            command = ["python", "lma/run_hydra.py"]
+            args = [
+                "project_name=SMPLOlympics",
+                "num_agents=2",
+                "learning={}".format(v["learning"]),
+                "exp_name={}/{}/{}".format(TASK_NAME, v["exp_name"], str(i)),
+                "env={}".format(v["env"]),
+                "env.num_envs=512",
+                "env.task={}".format(v["task"]),
+                "env.enableTaskObs=True",
+                "env.plane.restitution=0.6",
+                "+env.contact_bodies=[\"R_Ankle\",\"L_Ankle\",\"R_Toe\",\"L_Toe\",\"R_Hand\"]",
+                "robot=smpl_humanoid_tennis_righthand",
+                "robot.has_upright_start=True",
+                "robot.real_weight_porpotion_boxes=False",
+                "env.numAMPObsSteps=10",
+                "env.shape_resampling_interval=500000",
+                "env.motion_file=./sample_data/video_tennis_afterproc_upright.pkl",
+                "env.episode_length=2000",
+                "headless=True",
+                "env.stateInit=Default",
+                "no_log=True",
+            ]
+
+            command += args
+
+            subprocess.run(command)
+
+            # for p in glob.glob(DST_DIR + '/' + v["exp_name"] + '/*.pth'):
+            #     if os.path.isfile(p):
+            #         shutil.copy(p, weight_save_dir)
+
+if __name__ == '__main__':
+    main()
