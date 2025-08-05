@@ -9,6 +9,12 @@
 
 # Latent Motion Adjuster (LMA)
 
+**NOTE:** Currently, the repository does not include code related to the proposed method, so training cannot be executed. The code corresponding to the pseudo-code below will be made publicly available after acceptance.
+
+<div float="center">
+  <img src="images/algorithm3.png" />
+</div>
+
 ## Installation
 
 We tested our code on Ubuntu 22.04.
