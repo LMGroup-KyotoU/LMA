@@ -19,12 +19,9 @@ params:
           name: default
         sigma_init:
           name: const_initializer
-          # val: -1
           val: -3
-        # fixed_sigma: True
-        fixed_sigma: False
-        # learn_sigma: False
-        learn_sigma: True
+        fixed_sigma: True
+        learn_sigma: False
 
     mlp:
       units: [1024, 512]
@@ -32,7 +29,7 @@ params:
       d2rl: False
 
       initializer:
-        name: zero
+        name: default
       regularizer:
         name: None
       freeze: False
@@ -61,7 +58,7 @@ params:
     learning_rate: 2e-5
     lr_schedule: constant
     score_to_win: 20000
-    max_epochs: 10000
+    max_epochs: 20000
     save_best_after: 100
     save_frequency: 2000
     print_stats: False

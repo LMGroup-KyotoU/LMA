@@ -40,7 +40,7 @@ params:
       d2rl: False
 
       initializer:
-        name: zero
+        name: default
       regularizer:
         name: None
       action_scale: 0.0001
@@ -52,7 +52,7 @@ params:
       d2rl: False
 
       initializer:
-        name: zero
+        name: default
       regularizer:
         name: None
       action_scale: 0.0001
@@ -99,7 +99,7 @@ params:
     learning_rate: 2e-5
     lr_schedule: constant
     score_to_win: 20000
-    max_epochs: 10000
+    max_epochs: 20000
     save_best_after: 100
     save_frequency: 2000
     print_stats: False
