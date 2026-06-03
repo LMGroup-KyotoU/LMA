@@ -60,15 +60,19 @@ from learning import amp_models
 from learning import network_builder
 from learning import amp_network_builder
 from learning import amp_network_lma_builder
+from learning import amp_network_expansion_builder
+from learning import amp_network_film_builder
 from learning import amp_network_lma_sepmc_builder
 from learning import amp_lma_w_freeze_local_op_obs_self_play_agent
 from learning import amp_lma_local_op_obs_self_play_agent
 from learning import amp_lma_sepmc_local_op_obs_self_play_agent
-from learning import amp_lma_local_op_obs_self_play_agent
+from learning import amp_residual_self_play_agent
 from learning import amp_sepmc_local_op_obs_self_play_agent
+from learning import amp_lma_history_local_op_obs_self_play_agent
 from learning import amp_lma_w_freeze_local_op_obs_self_play_players
 from learning import amp_lma_local_op_obs_self_play_players
 from learning import amp_sepmc_local_op_obs_self_play_players
+from learning import amp_residual_self_play_players
 from learning import hetero_local_op_obs_players_match
 
 from phc.env.tasks import humanoid_amp_task
@@ -265,10 +269,13 @@ def build_alg_runner(algo_observer):
     runner = Runner(algo_observer)
 
     runner.algo_factory.register_builder('amp_self_play', lambda **kwargs: amp_self_play_agent.AMPSelfPlayAgent(**kwargs))
+    runner.algo_factory.register_builder('amp_residual_self_play', lambda **kwargs: amp_residual_self_play_agent.AMPResidualSelfPlayAgent(**kwargs))
     runner.algo_factory.register_builder('amp_lma_w_freeze_local_op_obs_self_play', lambda **kwargs: amp_lma_w_freeze_local_op_obs_self_play_agent.AMPLMAFreezeLocalOpObsSelfPlayAgent(**kwargs))
     runner.algo_factory.register_builder('amp_lma_local_op_obs_self_play', lambda **kwargs: amp_lma_local_op_obs_self_play_agent.AMPLMALocalOpObsSelfPlayAgent(**kwargs))
     runner.algo_factory.register_builder('amp_lma_sepmc_local_op_obs_self_play', lambda **kwargs: amp_lma_sepmc_local_op_obs_self_play_agent.AMPLMASEPMCLocalOpObsSelfPlayAgent(**kwargs))
+    runner.algo_factory.register_builder('amp_lma_history_local_op_obs_self_play', lambda **kwargs: amp_lma_history_local_op_obs_self_play_agent.AMPLMAHistoryLocalOpObsSelfPlayAgent(**kwargs))
     runner.algo_factory.register_builder('amp_sepmc_local_op_obs_self_play', lambda **kwargs: amp_sepmc_local_op_obs_self_play_agent.AMPSEPMCLocalOpObsSelfPlayAgent(**kwargs))
+    runner.player_factory.register_builder('amp_residual_self_play', lambda **kwargs: amp_residual_self_play_players.AMPResidualSelfPlayPlayerContinuous(**kwargs))
     runner.player_factory.register_builder('amp_lma_w_freeze_local_op_obs_self_play', lambda **kwargs: amp_lma_w_freeze_local_op_obs_self_play_players.AMPLMAFreezeLocalOpObsSelfPlayPlayerContinuous(**kwargs))
     runner.player_factory.register_builder('amp_lma_local_op_obs_self_play', lambda **kwargs: amp_lma_local_op_obs_self_play_players.AMPLMALocalOpObsSelfPlayPlayerContinuous(**kwargs))
     runner.player_factory.register_builder('amp_lma_local_op_obs_self_play_match', lambda **kwargs: amp_lma_local_op_obs_self_play_players_match.AMPLMALocalOpObsSelfPlayPlayerContinuousMatch(**kwargs))
@@ -279,8 +286,10 @@ def build_alg_runner(algo_observer):
     runner.model_builder.model_factory.register_builder('amp', lambda network, **kwargs: amp_models.ModelAMPContinuous(network))
     runner.model_builder.network_factory.register_builder('a2c', lambda **kwargs: network_builder.A2CBuilder())
     runner.model_builder.network_factory.register_builder('amp', lambda **kwargs: amp_network_builder.AMPBuilder())
-    runner.model_builder.network_factory.register_builder('amp_ia', lambda **kwargs: amp_network_lma_builder.AMPLMABuilder())
+    runner.model_builder.network_factory.register_builder('amp_lma', lambda **kwargs: amp_network_lma_builder.AMPLMABuilder())
     runner.model_builder.network_factory.register_builder('amp_lma_sepmc', lambda **kwargs: amp_network_lma_sepmc_builder.AMPLMASEPMCBuilder())
+    runner.model_builder.network_factory.register_builder('amp_expansion', lambda **kwargs: amp_network_expansion_builder.AMPExpansionBuilder())
+    runner.model_builder.network_factory.register_builder('amp_film', lambda **kwargs: amp_network_film_builder.AMPLMAFILMBuilder())
 
     return runner
 

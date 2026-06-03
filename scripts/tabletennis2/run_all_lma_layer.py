@@ -6,16 +6,22 @@ import glob
 
 ITERATION_NUM=3
 METHOD_DICT = {
-    'pulse_lma_sepmc_local_op_obs': {
-        'learning': 'pulse_lma_sepmc_local_op_obs_self_play_pp',
-        'exp_name': 'pulse_lma_sepmc_local_op_obs',
+    'pulse_lma_local_op_obs_1layer': {
+        'learning': 'pulse_lma_local_op_obs_self_play_pp_1layer',
+        'exp_name': 'pulse_lma_local_op_obs_1layer',
+        'env': 'env_amp_z',
+        'task': 'HumanoidPP2ZLocalOpObs',
+    },
+    'pulse_lma_local_op_obs_4layer': {
+        'learning': 'pulse_lma_local_op_obs_self_play_pp_4layer',
+        'exp_name': 'pulse_lma_local_op_obs_4layer',
         'env': 'env_amp_z',
         'task': 'HumanoidPP2ZLocalOpObs',
     },
 }
 CFG_DIR = "./lma/data/cfg/learning"
 DST_DIR = "./output/HumanoidIm"
-TASK_NAME = "tabletennis2_compete"
+TASK_NAME = "tabletennis2"
 
 
 def main():
@@ -23,13 +29,17 @@ def main():
         for k, v in METHOD_DICT.items():
 
             weight_save_dir = os.path.join(DST_DIR, TASK_NAME, k, str(i))
+
+            if os.path.exists(os.path.join(weight_save_dir, "Humanoid_00020000.pth")):
+                continue
+
             log_save_dir = os.path.join(DST_DIR, TASK_NAME, k, str(i), TASK_NAME, k)
             os.makedirs(weight_save_dir, exist_ok=True)
             os.makedirs(log_save_dir, exist_ok=True)
 
             shutil.copy(os.path.join(CFG_DIR, v["learning"] + ".yaml"), weight_save_dir)
 
-            command = ["python", "lma/run_hydra.py"]
+            command = ["python", "phc/run_hydra.py"]
             args = [
                 "project_name=SMPLOlympics",
                 "num_agents=2",
@@ -46,12 +56,12 @@ def main():
                 "env.motion_file=./sample_data/pingpong1after_upright.pkl",
                 "headless=True",
                 "env.stateInit=Default",
-                "+env.compete_reward=True",
                 "no_log=True",
-                "+learning.params.config.save_initial_weight=true",
             ]
 
             command += args
+
+            print(command)
 
             subprocess.run(command)
 

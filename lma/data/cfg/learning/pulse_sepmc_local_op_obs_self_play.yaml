@@ -99,7 +99,6 @@ params:
 
     update_agent: 0
     task_local_op_obs_size: 6
-    # switch_frequency: 50
     switch_frequency: 500
 
     target_action:

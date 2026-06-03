@@ -2,13 +2,13 @@ params:
   seed: 0
 
   algo:
-    name: amp_self_play
+    name: amp_lma_local_op_obs_self_play
 
   model:
     name: amp
 
   network:
-    name: amp
+    name: amp_lma
     separate: True
 
     space:
@@ -19,7 +19,7 @@ params:
           name: default
         sigma_init:
           name: const_initializer
-          val: -1
+          val: -3
         fixed_sigma: True
         learn_sigma: False
 
@@ -32,6 +32,19 @@ params:
         name: default
       regularizer:
         name: None
+      freeze: False
+
+    ia:
+      units: [1024, 512, 512, 256]
+      activation: silu
+      d2rl: False
+
+      initializer:
+        name: default
+      regularizer:
+        name: None
+      action_scale: 0.0001
+      value_scale: 0
 
     disc:
       units: [1024, 512]
@@ -86,6 +99,7 @@ params:
     disc_reward_scale: 2
     disc_weight_decay: 0.0001
     normalize_amp_input: True
+    normalize_local_op_obs_input: True
 
     task_reward_w: 1.0
     disc_reward_w: 0.0
@@ -94,5 +108,6 @@ params:
         games_num: 50000000
 
     update_agent: 0
-    fn: "output/HumanoidIm/smpl_boxing_self_play_amp_z/Humanoid_00010000.pth"
+    task_local_op_obs_size: 6
+    checkpoint: "output/HumanoidIm/tabletennis/pulse/Humanoid_00070000.pth"
     switch_frequency: 500

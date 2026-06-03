@@ -5,24 +5,20 @@ import shutil
 
 ITERATION_NUM=3
 PLAYER_DICT = {
-    'pulse_lma_w_freeze_local_op_obs': {
-        'cfg': 'pulse_lma_w_freeze_local_op_obs_self_play.yaml',
+    'pulse_lma_local_op_obs': {
+        'cfg': 'pulse_lma_local_op_obs_self_play_tennis2.yaml',
         'dstep': 0,
     },
-    'pulse_sepmc_local_op_obs': {
-        'cfg': 'pulse_sepmc_local_op_obs_self_play.yaml',
+    'pulse_lma_w_freeze_local_op_obs': {
+        'cfg': 'pulse_lma_w_freeze_local_op_obs_self_play.yaml',
         'dstep': 0,
     },
     'pulse_finetune': {
         'cfg': 'pulse_self_play.yaml',
         'dstep': 180000,
     },
-    'pulse_lma_sepmc_local_op_obs': {
-        'cfg': 'pulse_lma_sepmc_local_op_obs_self_play_tennis2.yaml',
-        'dstep': 0,
-    },
-    'pulse_lma_local_op_obs': {
-        'cfg': 'pulse_lma_local_op_obs_self_play_tennis2.yaml',
+    'pulse_expansion_local_op_obs': {
+        'cfg': 'pulse_expansion_local_op_obs_self_play_tennis2.yaml',
         'dstep': 0,
     },
 }

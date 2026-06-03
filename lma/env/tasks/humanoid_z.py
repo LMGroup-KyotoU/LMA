@@ -256,3 +256,64 @@ class HumanoidZ(humanoid.Humanoid):
                 self.gt_sigmas = torch.cat([self.gt_sigmas, sigma], dim=-1)
 
         return self.gt_mus, self.gt_sigmas
+
+    def get_task_action(self, obs):
+        gt_mus, gt_sigmas = self.get_task_policy_output(obs)
+
+        self.gt_actions = torch.zeros([obs.shape[0], 0]).to(self.device)
+
+        # NOTE: temporally assume #task_policy = 1
+        assert len(self.task_policies) == 1
+
+        with torch.no_grad():
+            for num, task_policy in self.task_policies.items():
+
+                distr = torch.distributions.Normal(gt_mus, torch.exp(gt_sigmas))
+                actions_z = distr.sample().squeeze()
+
+                ################ GT-Z ################
+                self_obs_size = self.get_self_obs_size()
+                if self.obs_v == 2:
+                    self_obs_size = self_obs_size//self.past_track_steps
+                    obs_buf = self.obs_buf.view(self.num_envs * self.num_agents, self.past_track_steps, -1)
+                    curr_obs = obs_buf[:, -1]
+                    self_obs = ((curr_obs[:, :self_obs_size] - self.running_mean.float()[:self_obs_size]) / torch.sqrt(self.running_var.float()[:self_obs_size] + 1e-05))
+                else:
+                    self_obs = (self.obs_buf[:, :self_obs_size] - self.running_mean.float()[:self_obs_size]) / torch.sqrt(self.running_var.float()[:self_obs_size] + 1e-05)
+
+                if self.distill_z_type == "hyper":
+                    actions_z = self.decoder.hyper_layer(actions_z)
+                if self.distill_z_type == "vq_vae":
+                    if self.is_discrete:
+                        indexes = actions_z
+                    else:
+                        B, F = actions_z.shape
+                        indexes = actions_z.reshape(B, -1, self.embedding_size_distill).argmax(dim = -1)
+                    task_out_proj = self.decoder.quantizer.embedding.weight[indexes.view(-1)]
+                    print(f"\r {indexes.numpy()[0]}", end = '')
+                    actions_z = task_out_proj.view(-1, self.embedding_size_distill)
+                elif self.distill_z_type == "vae":
+                    if self.use_vae_prior:
+                        z_prior_out = self.decoder.z_prior(self_obs)
+                        prior_mu = self.decoder.z_prior_mu(z_prior_out)
+
+                        actions_z = prior_mu + actions_z
+
+                    if self.use_vae_sphere_posterior:
+                        actions_z = project_to_norm(actions_z, 1, "sphere")
+                    else:
+                        actions_z = project_to_norm(actions_z, self.cfg['env'].get("embedding_norm", 5), "none")
+
+                else:
+                    actions_z = project_to_norm(actions_z, self.cfg['env'].get("embedding_norm", 5), self.distill_z_type)
+
+
+                if self.z_all:
+                    x_all = self.decoder.decoder(actions_z)
+                else:
+                    self_obs = torch.clamp(self_obs, min=-5.0, max=5.0)
+                    x_all = self.decoder.decoder(torch.cat([self_obs, actions_z], dim = -1))
+
+                actions = x_all
+
+        return actions

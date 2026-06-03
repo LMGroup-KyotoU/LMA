@@ -56,7 +56,7 @@ class HeteroLocalOpObsPlayerContinuousMatch(common_player.CommonPlayer):
         self.model_builder.network_factory.register_builder('a2c', lambda **kwargs: network_builder.A2CBuilder())
         self.model_builder.network_factory.register_builder('amp', lambda **kwargs: amp_network_builder.AMPBuilder())
         self.model_builder.network_factory.register_builder('amp_z', lambda **kwargs: amp_network_z_builder.AMPZBuilder())
-        self.model_builder.network_factory.register_builder('amp_ia', lambda **kwargs: amp_network_lma_builder.AMPLMABuilder())
+        self.model_builder.network_factory.register_builder('amp_lma', lambda **kwargs: amp_network_lma_builder.AMPLMABuilder())
 
         # register player
         self.player_factory = ObjectFactory()

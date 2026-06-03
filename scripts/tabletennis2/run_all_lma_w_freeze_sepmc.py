@@ -6,18 +6,16 @@ import glob
 
 ITERATION_NUM=3
 METHOD_DICT = {
-    'pulse_scratch': {
-        'learning': 'pulse_self_play',
-        'exp_name': 'pulse_scratch',
+    'pulse_lma_w_freeze_sepmc_local_op_obs': {
+        'learning': 'pulse_lma_w_freeze_sepmc_local_op_obs_self_play_pp',
+        'exp_name': 'pulse_lma_w_freeze_sepmc_local_op_obs',
         'env': 'env_amp_z',
         'task': 'HumanoidPP2ZLocalOpObs',
-        'epoch': 0
     },
 }
 CFG_DIR = "./lma/data/cfg/learning"
 DST_DIR = "./output/HumanoidIm"
-TASK_NAME = "tabletennis2_compete"
-# TASK_NAME = "tabletennis2_compete_check_initial_weight"
+TASK_NAME = "tabletennis2"
 
 
 def main():
@@ -31,7 +29,7 @@ def main():
 
             shutil.copy(os.path.join(CFG_DIR, v["learning"] + ".yaml"), weight_save_dir)
 
-            command = ["python", "lma/run_hydra.py"]
+            command = ["python", "phc/run_hydra.py"]
             args = [
                 "project_name=SMPLOlympics",
                 "num_agents=2",
@@ -48,20 +46,12 @@ def main():
                 "env.motion_file=./sample_data/pingpong1after_upright.pkl",
                 "headless=True",
                 "env.stateInit=Default",
-                "+env.compete_reward=True",
                 "no_log=True",
-                "epoch=0",
-                "+learning.params.config.save_initial_weight=true",
-                # "learning.params.config.max_epochs=1"
             ]
 
             command += args
 
             subprocess.run(command)
-
-            # for p in glob.glob(DST_DIR + '/' + v["exp_name"] + '/*.pth'):
-            #     if os.path.isfile(p):
-            #         shutil.copy(p, weight_save_dir)
 
 if __name__ == '__main__':
     main()

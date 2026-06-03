@@ -6,16 +6,17 @@ import glob
 
 ITERATION_NUM=3
 METHOD_DICT = {
-    'pulse_sepmc_local_op_obs': {
-        'learning': 'pulse_sepmc_local_op_obs_self_play',
-        'exp_name': 'pulse_sepmc_local_op_obs',
-        'env': 'env_amp_z_lma_pp',
-        'task': 'HumanoidPP2ZLocalOpObs',
+    'pulse_residual': {
+        'learning': 'pulse_residual_self_play',
+        'exp_name': 'pulse_residual',
+        'env': 'env_amp_residual_pp',
+        'task': 'HumanoidPP2LocalOpObs',
+        'epoch': 0
     },
 }
 CFG_DIR = "./lma/data/cfg/learning"
 DST_DIR = "./output/HumanoidIm"
-TASK_NAME = "tabletennis2_compete"
+TASK_NAME = "tabletennis2"
 
 
 def main():
@@ -23,13 +24,17 @@ def main():
         for k, v in METHOD_DICT.items():
 
             weight_save_dir = os.path.join(DST_DIR, TASK_NAME, k, str(i))
+
+            if os.path.exists(os.path.join(weight_save_dir, "Humanoid_00020000.pth")):
+                continue
+
             log_save_dir = os.path.join(DST_DIR, TASK_NAME, k, str(i), TASK_NAME, k)
             os.makedirs(weight_save_dir, exist_ok=True)
             os.makedirs(log_save_dir, exist_ok=True)
 
             shutil.copy(os.path.join(CFG_DIR, v["learning"] + ".yaml"), weight_save_dir)
 
-            command = ["python", "lma/run_hydra.py"]
+            command = ["python", "phc/run_hydra.py"]
             args = [
                 "project_name=SMPLOlympics",
                 "num_agents=2",
@@ -46,14 +51,17 @@ def main():
                 "env.motion_file=./sample_data/pingpong1after_upright.pkl",
                 "headless=True",
                 "env.stateInit=Default",
-                "+env.compete_reward=True",
                 "no_log=True",
-                "+learning.params.config.save_initial_weight=true",
+                "epoch=0"
             ]
 
             command += args
 
             subprocess.run(command)
+
+            # for p in glob.glob(DST_DIR + '/' + v["exp_name"] + '/*.pth'):
+            #     if os.path.isfile(p):
+            #         shutil.copy(p, weight_save_dir)
 
 if __name__ == '__main__':
     main()

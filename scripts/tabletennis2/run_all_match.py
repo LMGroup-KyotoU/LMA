@@ -13,26 +13,14 @@ PLAYER_DICT = {
         'cfg': 'pulse_lma_w_freeze_local_op_obs_self_play.yaml',
         'dstep': 0,
     },
-    'pulse_sepmc_local_op_obs': {
-        'cfg': 'pulse_sepmc_local_op_obs_self_play.yaml',
-        'dstep': 0,
-    },
     'pulse_finetune': {
         'cfg': 'pulse_self_play.yaml',
         'dstep': 70000,
     },
-    'pulse_lma_sepmc_local_op_obs': {
-        'cfg': 'pulse_lma_sepmc_local_op_obs_self_play_pp.yaml',
+    'pulse_expansion_local_op_obs': {
+        'cfg': 'pulse_expansion_local_op_obs_self_play_pp.yaml',
         'dstep': 0,
     },
-    # 'pulse_kl_prior': {
-    #     'cfg': 'pulse_kl_prior_self_play.yaml',
-    #     'dstep': 0,
-    # },
-    # 'pulse_scratch': {
-    #     'cfg': 'pulse_self_play.yaml',
-    #     'dstep': 0,
-    # },
 }
 
 CFG_DIR = "./lma/data/cfg/learning"

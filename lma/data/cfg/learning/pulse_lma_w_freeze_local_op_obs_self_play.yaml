@@ -91,9 +91,6 @@ params:
 
     task_reward_w: 1.0
     disc_reward_w: 0.0
-    predict_reward_w: 0.0
-    predicted_reward_w: 0.0
-    kl_dist_scale: 0.2
 
     lma_action_scale: 0.0001
 

@@ -60,6 +60,10 @@ class HumanoidTennis2(humanoid_amp_task.HumanoidAMPTask):
         self.record_ball_pos = cfg["env"].get('record_ball_pos', False)
         self.recording = cfg["env"].get("recording", False)
 
+        self.initialize_z = cfg["env"].get("initialize_z_models", False)
+        if self.initialize_z:
+            self.initialize_z_models()
+
         return
 
     def get_win_buf(self):
