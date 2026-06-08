@@ -97,8 +97,6 @@ Update the high-level policy weight paths in the files under \<LMA repositry\>/l
 
 - \<LMA repositry\>/lma/data/cfg/env/*.yaml
     ```
-    or
-
     ...
     task_models:
         ...
