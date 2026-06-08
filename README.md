@@ -5,6 +5,7 @@
 [pulse]: https://github.com/ZhengyiLuo/PULSE
 [sepmc]: https://tencent-roboticsx.github.io/lifelike-agility-and-play/
 [kl_penalty]: https://www.science.org/doi/10.1126/scirobotics.abo0235
+[film]: https://dl.acm.org/doi/abs/10.5555/3504035.3504518
 
 
 # Latent Motion Adjuster (LMA)
@@ -85,23 +86,47 @@ We leveraged the provided code from [SMPLOlympics][smpl_olympics] to acquire sin
 
 ## Training LMA for multi-agent interaction stage
 
+Update the high-level policy weight paths in the files under \<LMA repositry\>/lma/data/cfg/[learning/env].
+
+- \<LMA repositry\>/lma/data/cfg/learning/*.yaml
+    ```
+    ...
+        checkpoint: "<your weight path>"
+    ...
+    ```
+
+- \<LMA repositry\>/lma/data/cfg/env/*.yaml
+    ```
+    or
+
+    ...
+    task_models:
+        ...
+            model: "<your weight path>"
+        ...
+    ```
+
 We provide python scripts to train our models and baselines:
   - method:
-    - scratch: [PULSE][pulse](from scratch)
-    - finetune: [PULSE][pulse](fine tuning)
-    - sepmc: [PULSE][pulse]+[SEPMC][sepmc]
-    - kl_penalty: [PULSE][pulse]+[KL penalty][kl_penalty]
-    - lma_w_freeze: [PULSE][pulse] + LMA (/w fixed high-level policy)
-    - lma: [PULSE][pulse] + LMA
-    - lma_sepmc: [PULSE][pulse] + LMA + [SEPMC][sepmc]
+    - (i) scratch: [PULSE][pulse] (from scratch)
+    - (ii) finetune: [PULSE][pulse] (fine tuning)
+    - (iii) expansion: [PULSE][pulse] (fine tuning w/ expansion)
+    - (iv) residual: [PULSE][pulse] + residual RL (action)
+    - (v) film: [PULSE][pulse] + residual RL ([hidden-layer][film])
+    - (vi) kl_penalty: [PULSE][pulse]+[KL][kl_penalty]
+    - (vii) lma_w_freeze: [PULSE][pulse] + LMA (ours w/ freeze)
+    - (viii) lma: [PULSE][pulse] + LMA (ours w/o freeze)
+    - (ix) sepmc: [PULSE][pulse]+[SEPMC][sepmc]
+    - (x) lma_w_freeze_sepmc: [PULSE][pulse] + LMA + [SEPMC][sepmc] (ours w freeze)
+    - (xi) lma_sepmc: [PULSE][pulse] + LMA + [SEPMC][sepmc] (ours w/o freeze)
 
-All scripts are in the `scripts` folder. Please check the contents of the script and pick one command  for training.
+All scripts are in the `scripts` folder. Please check the contents of the script and pick one command for training.
 
    - Cooperation:
       ```bash
       cd <LMA repository>
       python3 ./scripts/<tablettennis2/tennis2>/run_all_<method_name>.py
-      # e.g) python3 ./scripts/tennis2/run_all_ia.py
+      # e.g) python3 ./scripts/tennis2/run_all_lma.py
       ```
    - Competition:
       ```bash
