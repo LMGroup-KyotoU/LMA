@@ -7,7 +7,7 @@ from rl_games.common.player import BasePlayer
 import learning.common_player as common_player
 
 from rl_games.common.tr_helpers import unsqueeze_obs
-from phc.learning.amp_self_play_agent import construct_op_ck_name
+from learning.amp_self_play_agent import construct_op_ck_name
 
 def rescale_actions(low, high, action):
     d = (high - low) / 2.0

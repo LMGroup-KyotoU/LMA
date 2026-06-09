@@ -34,7 +34,7 @@ def main():
 
             shutil.copy(os.path.join(CFG_DIR, v["learning"] + ".yaml"), weight_save_dir)
 
-            command = ["python", "phc/run_hydra.py"]
+            command = ["python", "lma/run_hydra.py"]
             args = [
                 "project_name=SMPLOlympics",
                 "num_agents=2",
