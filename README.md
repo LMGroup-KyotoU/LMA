@@ -10,6 +10,9 @@
 
 # Latent Motion Adjuster (LMA)
 
+LMA: Latent Motion Adjuster for Physics-based Multi-agent Interaction
+- Paper: [\[TMLR\]](https://openreview.net/forum?id=OR5ClOTaWU)
+
 ## Installation
 
 We tested our code on Ubuntu 22.04.
