@@ -12,6 +12,7 @@
 
 LMA: Latent Motion Adjuster for Physics-based Multi-agent Interaction
 - Paper: [\[TMLR\]](https://openreview.net/forum?id=OR5ClOTaWU)
+- Website: [\[LMA Website\]](https://lmgroup-kyotou.github.io/lma.github.io/)
 
 ## Installation
 
